@@ -2,12 +2,17 @@ import 'package:easyinvoice/src/features/invoices/presentation/screens/create_in
 import 'package:easyinvoice/src/features/invoices/presentation/screens/invoice_detail_screen.dart';
 import 'package:easyinvoice/src/start.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:item_repository/item_repository.dart';
+
+import '../bl_objects/item/item_cubit.dart';
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key, required this.itemRepository}) : super(key: key);
 
+  final ItemRepository itemRepository;
   final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
@@ -30,7 +35,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return RepositoryProvider.value(
+      value: itemRepository,
+      child: BlocProvider(
+      create: (context) => ItemCubit(context.read<ItemRepository>()),
+      child: MaterialApp.router(
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       title: 'Invoice',
@@ -44,6 +53,8 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.deepPurple,
       ),
+    )
+    )
     );
   }
 }
