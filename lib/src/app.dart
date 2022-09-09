@@ -1,3 +1,7 @@
+import 'package:bl_objects_repository/client/index.dart';
+import 'package:bl_objects_repository/invoice/repository.dart';
+import 'package:bl_objects_repository/item/repository.dart';
+import 'package:bl_objects_repository/user/repository.dart';
 import 'package:easyinvoice/src/features/invoices/presentation/screens/create_invoice_screen.dart';
 import 'package:easyinvoice/src/features/invoices/presentation/screens/invoice_detail_screen.dart';
 import 'package:easyinvoice/src/start.dart';
@@ -5,14 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:item_repository/item_repository.dart';
 
+import '../bl_objects/client/client_cubit.dart';
 import '../bl_objects/item/item_cubit.dart';
-
+import '../bl_objects/invoice/invoice_cubit.dart';
+import '../bl_objects/user/user_cubit.dart';
 class MyApp extends StatelessWidget {
-  MyApp({Key? key, required this.itemRepository}) : super(key: key);
+  MyApp({Key? key, required this.itemRepository, required this.clientRepository, required this.invoiceRepository, required this.userRepository}) : super(key: key);
 
+  final UserRepository userRepository;
+  final InvoiceRepository invoiceRepository;
   final ItemRepository itemRepository;
+  final ClientRepository clientRepository;
   final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
@@ -35,10 +43,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: itemRepository,
-      child: BlocProvider(
-      create: (context) => ItemCubit(context.read<ItemRepository>()),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ItemRepository>(
+        create: (context) => ItemRepository(),
+        ),
+        RepositoryProvider<ClientRepository>(
+          create: (context) => ClientRepository(),
+        ),
+        RepositoryProvider<InvoiceRepository>(
+          create: (context) => InvoiceRepository(),
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (context) => UserRepository(),
+        ),
+      ],
+      child: MultiBlocProvider(
+      providers: [
+        BlocProvider<ItemCubit>(
+          create: (BuildContext context) => ItemCubit(context.read<ItemRepository>()),
+        ),
+        BlocProvider<ClientCubit>(
+          create: (BuildContext context) => ClientCubit(context.read<ClientRepository>()),
+        ),
+        BlocProvider<InvoiceCubit>(
+          create: (BuildContext context) => InvoiceCubit(context.read<InvoiceRepository>()),
+        ),
+        BlocProvider<UserCubit>(
+          create: (BuildContext context) => UserCubit(context.read<UserRepository>()),
+        ),
+      ],
       child: MaterialApp.router(
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,

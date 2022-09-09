@@ -1,138 +1,146 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:bloc_test/bloc_test.dart';
-import 'package:easyinvoice/bl_objects/client/client_cubit.dart';
+import 'package:easyinvoice/bl_objects/invoice/invoice_cubit.dart';
 import 'package:invoice_api/invoice_api.dart';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-import 'package:bl_objects_repository/client/index.dart'
-as client_repository;
+import 'package:bl_objects_repository/invoice/index.dart'
+as invoice_repository;
 
 import '../../helpers/hydrated_bloc.dart';
 
 
 
-class MockClientRepository extends Mock
-    implements client_repository.ClientRepository {}
+class MockInvoiceRepository extends Mock
+    implements invoice_repository.InvoiceRepository {}
 
-class MockClient extends Mock implements Client {}
+class MockInvoice extends Mock implements Invoice {}
 
 void main() {
   initHydratedStorage();
 
-  group('clientCubit', () {
-    late Client client;
-    late client_repository.ClientRepository clientRepository;
-    late ClientCubit clientCubit;
-    late Client rclient;
-    late Client rclient2;
+  group('invoiceCubit', () {
+    late Invoice invoice;
+    late invoice_repository.InvoiceRepository invoiceRepository;
+    late InvoiceCubit invoiceCubit;
+    late Invoice rinvoice;
+    late Invoice rinvoice2;
     setUp(() async {
-      rclient = Client(
+      rinvoice = Invoice(
           userId: '62e393a5fb12b967fea3d9d0',
-          name: "name",
-          streetName: "streetName",
-          streetNumber: "streetNumber",
-          postalCode: "postalCode",
-          city: "city",
-          phoneNumber: "019285973935",
-          email: "email@s.ds",
-          creationDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
+          id: '62e393a5fb12b967fea3d9d0',
           modifiedDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
-          id: '62e393a5fb12b967fea3d9d0');
-      rclient2 = Client(
+          creationDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
+          paymentInformation: PaymentInformation(type: "type", details: "details"),
+          paymentAfterTaxAndDiscount: 34,
+          clientId: '62e393a5fb12b967fea3d9d0',
+          invoiceNumber: '24235236432',
+          isPaid: false,
+          deliveryDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
+          discount: 0.1,
+          itemList: [],
+          paymentDate: DateTime.parse("2022-08-11T09:12:11.524Z")
+      );
+      rinvoice2 = Invoice(
           userId: '62e393a5fb12b967fea3d9d0',
-          name: "name",
-          streetName: "streetName",
-          streetNumber: "streetNumber",
-          postalCode: "postalCode",
-          city: "city",
-          phoneNumber: "019285973935",
-          email: "email@s.ds",
-          creationDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
+          id: '62e393a5fb12b967fea3d9d0',
           modifiedDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
-          id: '62e393a5fb12b967fea3d9d0');
-      client = MockClient();
-      clientRepository = MockClientRepository();
-      when(() => client.name).thenReturn("name");
-      when(() => client.streetNumber).thenReturn("streetName");
-      when(() => client.streetNumber).thenReturn("streetNumber");
-      when(() => client.creationDate).thenReturn(DateTime.now());
-      when(() => client.modifiedDate).thenReturn(DateTime.now());
-      when(() => client.postalCode).thenReturn("postalCode");
-      when(() => client.id).thenReturn("9f239d98v9889090a0f38c");
-      when(() => client.userId).thenReturn("9f239d98v9889090a0f38c");
-      when(() => client.email).thenReturn("email@s.ds");
-      when(() => client.city).thenReturn("city");
-      when(() => client.phoneNumber).thenReturn("019285973935");
+          creationDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
+          paymentInformation: PaymentInformation(type: "type", details: "details"),
+          paymentAfterTaxAndDiscount: 34,
+          clientId: '62e393a5fb12b967fea3d9d0',
+          invoiceNumber: '242352364323',
+          isPaid: false,
+          deliveryDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
+          discount: 0.1,
+          itemList: [],
+          paymentDate: DateTime.parse("2022-08-11T09:12:11.524Z")
+      );
+      invoice = MockInvoice();
+      invoiceRepository = MockInvoiceRepository();
+      when(() => invoice.paymentInformation).thenReturn(PaymentInformation(type: "type", details: "details"));
+      when(() => invoice.paymentAfterTaxAndDiscount).thenReturn(34);
+      when(() => invoice.clientId).thenReturn('62e393a5fb12b967fea3d9d0');
+      when(() => invoice.creationDate).thenReturn(DateTime.now());
+      when(() => invoice.modifiedDate).thenReturn(DateTime.now());
+      when(() => invoice.invoiceNumber).thenReturn("242352364323");
+      when(() => invoice.id).thenReturn("9f239d98v9889090a0f38c");
+      when(() => invoice.userId).thenReturn("9f239d98v9889090a0f38c");
+      when(() => invoice.isPaid).thenReturn(false);
+      when(() => invoice.deliveryDate).thenReturn(DateTime.now());
+      when(() => invoice.itemList).thenReturn([]);
+      when(() => invoice.paymentDate).thenReturn(DateTime.now());
+      when(() => invoice.discount).thenReturn(0.1);
       when(
-            () => clientRepository.getClient(any()),
-      ).thenAnswer((_) async => rclient);
-      clientCubit = ClientCubit(clientRepository);
+            () => invoiceRepository.getInvoice(any()),
+      ).thenAnswer((_) async => rinvoice);
+      invoiceCubit = InvoiceCubit(invoiceRepository);
     });
 
     test('initial state is correct', () {
-      final weatherCubit = ClientCubit(clientRepository);
+      final weatherCubit = InvoiceCubit(invoiceRepository);
       expect(weatherCubit.state, InitialState());
     });
 
     group('toJson/fromJson', () {
       test('work properly', () async {
-        final clientCubit = ClientCubit(clientRepository);
-        await clientCubit.fetchClient("id");
-        when(() => clientRepository.getClient("id")).thenAnswer((_) async => Future.value(rclient));
+        final invoiceCubit = InvoiceCubit(invoiceRepository);
+        await invoiceCubit.fetchInvoice("id");
+        when(() => invoiceRepository.getInvoice("id")).thenAnswer((_) async => Future.value(rinvoice));
         expect(
-          clientCubit.fromJson(clientCubit.toJson(clientCubit.state)!),
-          clientCubit.state,
+          invoiceCubit.fromJson(invoiceCubit.toJson(invoiceCubit.state)!),
+          invoiceCubit.state,
         );
       });
     });
 
     group('right states', () {
-      test('is in ClientFetched after client is returned', () async {
-        final clientCubit = ClientCubit(clientRepository);
-        when(() => clientRepository.getClient("id")).thenAnswer((_) async => Future.value(rclient));
-        await clientCubit.fetchClient("id");
+      test('is in InvoiceFetched after invoice is returned', () async {
+        final invoiceCubit = InvoiceCubit(invoiceRepository);
+        when(() => invoiceRepository.getInvoice("id")).thenAnswer((_) async => Future.value(rinvoice));
+        await invoiceCubit.fetchInvoice("id");
         expect(
-          ClientFetchedState(client: rclient),
-          clientCubit.state,
+          InvoiceFetchedState(invoice: rinvoice),
+          invoiceCubit.state,
         );
       });
       test('is in FailureState after exception is thrown', () async {
-        final clientCubit = ClientCubit(clientRepository);
-        when(() => clientRepository.getClient("id")).thenAnswer((_) async => throw Exception("crash"));
-        await clientCubit.fetchClient("id");
+        final invoiceCubit = InvoiceCubit(invoiceRepository);
+        when(() => invoiceRepository.getInvoice("id")).thenAnswer((_) async => throw Exception("crash"));
+        await invoiceCubit.fetchInvoice("id");
         expect(
           FailureState(errorMessage: "crash"),
-          clientCubit.state,
+          invoiceCubit.state,
         );
       });
     });
     group('pagination', () {
       test('pagination works', () async {
-        final clientCubit = ClientCubit(clientRepository);
-        when(() => clientRepository.getClients(any())).thenAnswer((_) async => Future.value(client_repository.ClientResponse(clientList: [rclient], lastN: 1)));
-        await clientCubit.fetchClients(query: {}, pagination: true);
-        when(() => clientRepository.getClients(any())).thenAnswer((_) async => Future.value(client_repository.ClientResponse(clientList: [rclient2], lastN: 2)));
-        await clientCubit.fetchClients(query: {}, pagination: true);
+        final invoiceCubit = InvoiceCubit(invoiceRepository);
+        when(() => invoiceRepository.getInvoices(any())).thenAnswer((_) async => Future.value(invoice_repository.InvoiceResponse(invoiceList: [rinvoice], lastN: 1)));
+        await invoiceCubit.fetchInvoices(query: {}, pagination: true);
+        when(() => invoiceRepository.getInvoices(any())).thenAnswer((_) async => Future.value(invoice_repository.InvoiceResponse(invoiceList: [rinvoice2], lastN: 2)));
+        await invoiceCubit.fetchInvoices(query: {}, pagination: true);
         expect(
-          ClientListFetchedState(clientList: [rclient, rclient2], lastN: 2),
-          clientCubit.state,
+          InvoiceListFetchedState(invoiceList: [rinvoice, rinvoice2], lastN: 2),
+          invoiceCubit.state,
         );
       });
       test('pagination set on false works', () async {
-        final clientCubit = ClientCubit(clientRepository);
-        when(() => clientRepository.getClients(any())).thenAnswer((_) async => Future.value(client_repository.ClientResponse(clientList: [rclient], lastN: 1)));
-        await clientCubit.fetchClients(query: {}, pagination: true);
-        when(() => clientRepository.getClients(any())).thenAnswer((_) async => Future.value(client_repository.ClientResponse(clientList: [rclient2], lastN: 2)));
-        await clientCubit.fetchClients(query: {}, pagination: true);
+        final invoiceCubit = InvoiceCubit(invoiceRepository);
+        when(() => invoiceRepository.getInvoices(any())).thenAnswer((_) async => Future.value(invoice_repository.InvoiceResponse(invoiceList: [rinvoice], lastN: 1)));
+        await invoiceCubit.fetchInvoices(query: {}, pagination: true);
+        when(() => invoiceRepository.getInvoices(any())).thenAnswer((_) async => Future.value(invoice_repository.InvoiceResponse(invoiceList: [rinvoice2], lastN: 2)));
+        await invoiceCubit.fetchInvoices(query: {}, pagination: true);
         expect(
-          ClientListFetchedState(clientList: [rclient, rclient2], lastN: 2),
-          clientCubit.state,
+          InvoiceListFetchedState(invoiceList: [rinvoice, rinvoice2], lastN: 2),
+          invoiceCubit.state,
         );
-        await clientCubit.fetchClients(query: {}, pagination: false);
+        await invoiceCubit.fetchInvoices(query: {}, pagination: false);
         expect(
-          ClientListFetchedState(clientList: [rclient2], lastN: 1),
-          clientCubit.state,
+          InvoiceListFetchedState(invoiceList: [rinvoice2], lastN: 1),
+          invoiceCubit.state,
         );
       });
     });

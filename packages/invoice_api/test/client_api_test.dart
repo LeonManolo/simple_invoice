@@ -10,14 +10,14 @@ class MockHttpClient extends Mock implements http.Client {}
 
 class MockResponse extends Mock implements http.Response {}
 
-class MockItem extends Mock implements Item {}
+class MockClient extends Mock implements Client {}
 
 class FakeUri extends Fake implements Uri {}
 
 void main() {
-  group('itemApiClient', () {
+  group('clientApiClient', () {
     late http.Client httpClient;
-    late ItemApiClient itemApiClient;
+    late ClientApiClient clientApiClient;
 
     setUpAll(() {
       registerFallbackValue(FakeUri());
@@ -25,18 +25,18 @@ void main() {
 
     setUp(() {
       httpClient = MockHttpClient();
-      itemApiClient = ItemApiClient(httpClient: httpClient);
+      clientApiClient = ClientApiClient(httpClient: httpClient);
     });
 
     group('constructor', () {
       test('does not require an httpClient', () {
-        expect(ItemApiClient(), isNotNull);
+        expect(ClientApiClient(), isNotNull);
       });
     });
 
 
 
-    group('item update', () {
+    group('client update', () {
       test('makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
@@ -48,17 +48,17 @@ void main() {
     "matchedCount": 1
 }''');
         when(() => httpClient.put(any(), body: {})).thenAnswer((_) async => response);
-        Item fakeItem = MockItem();
-        when(fakeItem.toJson).thenReturn({});
-        final body = jsonEncode(fakeItem.toJson());
+        Client fakeClient = MockClient();
+        when(fakeClient.toJson).thenReturn({});
+        final body = jsonEncode(fakeClient.toJson());
         try {
-          await itemApiClient.insertItem(fakeItem);
+          await clientApiClient.insertClient(fakeClient);
         } catch (_) {}
         verify(
               () => httpClient.put(
               Uri.https(
                 'us-central1-invoice-c63dc.cloudfunctions.net',
-                '/api/v1/bl_objects/item',
+                '/api/v1/bl_objects/client',
               ),
                   headers: {"Content-Type": "application/json"},
                   body: body,
@@ -77,13 +77,13 @@ void main() {
     "upsertedCount": 0,
     "matchedCount": 1
 }''');
-        Item fakeItem = MockItem();
-        when(fakeItem.toJson).thenReturn({});
-        final body = jsonEncode(fakeItem.toJson());
+        Client fakeClient = MockClient();
+        when(fakeClient.toJson).thenReturn({});
+        final body = jsonEncode(fakeClient.toJson());
 
         when(() => httpClient.put(any(), body: body, headers: {"Content-Type":"application/json"})).thenAnswer((_) async => response);
         expect(
-              () async => itemApiClient.updateItem(fakeItem),
+              () async => clientApiClient.updateClient(fakeClient),
           throwsA(isA<Exception>()),
         );
       });
@@ -92,22 +92,22 @@ void main() {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
-    "error on updating item"
+    "error on updating client"
 }''');
-        Item fakeItem = MockItem();
-        when(fakeItem.toJson).thenReturn({});
-        final body = jsonEncode(fakeItem.toJson());
+        Client fakeClient = MockClient();
+        when(fakeClient.toJson).thenReturn({});
+        final body = jsonEncode(fakeClient.toJson());
 
         when(() => httpClient.put(any(),body: body,headers: {"Content-Type":"application/json"})).thenAnswer((_) async => response);
         expect(
-              () async => itemApiClient.updateItem(fakeItem),
+              () async => clientApiClient.updateClient(fakeClient),
           throwsA(isA<Exception>()),
         );
       });
     }
     );
 
-    group('item insert', () {
+    group('client insert', () {
       test('makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(201);
@@ -116,38 +116,38 @@ void main() {
         "insertedId": "62e393a5fb12b967fea3d9d0"
 }''');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
-        Item fakeItem = MockItem();
-        when(fakeItem.toJson).thenReturn({});
-        final body = jsonEncode(fakeItem.toJson());
+        Client fakeClient = MockClient();
+        when(fakeClient.toJson).thenReturn({});
+        final body = jsonEncode(fakeClient.toJson());
         try {
-          await itemApiClient.insertItem(fakeItem);
+          await clientApiClient.insertClient(fakeClient);
         } catch (_) {}
         verify(
               () => httpClient.put(
               Uri.https(
                 'us-central1-invoice-c63dc.cloudfunctions.net',
-                '/api/v1/bl_objects/item',
+                '/api/v1/bl_objects/client',
               ),
               body: body,
                   headers: {"Content-Type": "application/json"}
               ),
         ).called(1);
       });
-      test('inserts item, id gets extracted correctly', () async {
+      test('inserts client, id gets extracted correctly', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(201);
         when(() => response.body).thenReturn('''{
         "acknowledged": true,
         "insertedId": "62e393a5fb12b967fea3d9d0"
 }''');
-        Item fakeItem = MockItem();
-        when(fakeItem.toJson).thenReturn({});
-        final body = jsonEncode(fakeItem.toJson());
+        Client fakeClient = MockClient();
+        when(fakeClient.toJson).thenReturn({});
+        final body = jsonEncode(fakeClient.toJson());
         when(() => httpClient.post(any(), body: body, headers: {"Content-Type": "application/json"})).thenAnswer((_) async => response);
 
         String id = "62e393a5fb12b967fea3d9d0";
         try {
-          id = await itemApiClient.insertItem(fakeItem);
+          id = await clientApiClient.insertClient(fakeClient);
         } catch (_) {}
         expect(id, "62e393a5fb12b967fea3d9d0");
       });
@@ -156,53 +156,53 @@ void main() {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
-    "error on inserting item"
+    "error on inserting client"
 }''');
-        Item fakeItem = MockItem();
-        when(fakeItem.toJson).thenReturn({});
-        final body = jsonEncode(fakeItem.toJson());
+        Client fakeClient = MockClient();
+        when(fakeClient.toJson).thenReturn({});
+        final body = jsonEncode(fakeClient.toJson());
         when(() => httpClient.put(any(),body: body, headers: {"Content-Type": "application/json"} )).thenAnswer((_) async => response);
         expect(
-              () async => itemApiClient.insertItem(fakeItem),
+              () async => clientApiClient.insertClient(fakeClient),
           throwsA(isA<Exception>()),
         );
       });
     }
     );
 
-    group('itemSearch', () {
+    group('clientSearch', () {
       const id = 'mock-query';
-      test('getItemById makes correct http request', () async {
+      test('getClientById makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn('{}');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         try {
-          await itemApiClient.getItemById(id);
+          await clientApiClient.getClientById(id);
         } catch (_) {}
         verify(
               () => httpClient.get(
             Uri.https(
               'us-central1-invoice-c63dc.cloudfunctions.net',
-              '/api/v1/bl_objects/item/$id'
+              '/api/v1/bl_objects/client/$id'
             ),
           ),
         ).called(1);
       });
 
-      test('getItems makes correct http request', () async {
+      test('getClients makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn('{}');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         try {
-          await itemApiClient.getItems({});
+          await clientApiClient.getClients({});
         } catch (_) {}
         verify(
               () => httpClient.get(
             Uri.https(
               'us-central1-invoice-c63dc.cloudfunctions.net',
-              '/api/v1/bl_objects/item',
+              '/api/v1/bl_objects/client',
               {}
             ),
           ),
@@ -211,7 +211,7 @@ void main() {
 
 
 
-      test('getItemById throws ItemIdRequestFailure on non-200 response', () async {
+      test('getClientById throws ClientIdRequestFailure on non-200 response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
@@ -219,12 +219,12 @@ void main() {
 }''');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         expect(
-              () async => itemApiClient.getItemById(id),
-          throwsA(isA<ItemIdRequestFailure>()),
+              () async => clientApiClient.getClientById(id),
+          throwsA(isA<ClientIdRequestFailure>()),
         );
       });
 
-      test('getItems throws Exception on non-200 response', () async {
+      test('getClients throws Exception on non-200 response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
@@ -232,12 +232,12 @@ void main() {
 }''');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         expect(
-              () async => itemApiClient.getItems({}),
+              () async => clientApiClient.getClients({}),
           throwsA(isA<Exception>()),
         );
       });
 
-      test('getItemById returns Item on valid response', () async {
+      test('getClientById returns Client on valid response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn(
@@ -246,38 +246,39 @@ void main() {
     
         "_id": "62e393a5fb12b967fea3d9d0",
         "userId": "62e393a5fb12b967fea3d9d0",
-        "title": "abcefghijklmnopqrstuvwxyztest",
-        "description": "Bricks for construction",
-        "pricePerUnit": 17.625,
-        "tax": 0.19,
-        "discount": 0.02,
-        "taxedAmount": 15,
+        "name": "abcefghijklmnopqrstuvwxyztest",
+        "city": "hamburg",
+        "postalCode": "22111",
+        "streetName": "washingtonallee",
+        "streetNumber": "13a",
+        "phoneNumber": "200248092374",
         "taxIncluded": true,
         "creationDate": "2022-08-11T09:12:11.524Z",
-        "modifiedDate": "2022-08-11T09:12:11.524Z"
+        "modifiedDate": "2022-08-11T09:12:11.524Z",
+        "email": "erna@bert.de"
     
 }''',
         );
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
-        final actual = await itemApiClient.getItemById(id);
+        final actual = await clientApiClient.getClientById(id);
         expect(
           actual,
-          isA<Item>()
-              .having((l) => l.title, 'title', 'abcefghijklmnopqrstuvwxyztest')
+          isA<Client>()
+              .having((l) => l.name, 'name', 'abcefghijklmnopqrstuvwxyztest')
               .having((l) => l.id, 'id', '62e393a5fb12b967fea3d9d0')
               .having((l) => l.userId, 'userId', '62e393a5fb12b967fea3d9d0')
-              .having((l) => l.description, 'description', 'Bricks for construction')
-              .having((l) => l.pricePerUnit, 'pricePerUnit', 17.625)
-              .having((l) => l.tax, 'tax', 0.19)
-              .having((l) => l.discount, 'discount', 0.02)
-              .having((l) => l.taxIncluded, 'taxIncluded', true)
+              .having((l) => l.city, 'city', 'hamburg')
+              .having((l) => l.postalCode, 'postalCode', "22111")
+              .having((l) => l.streetName, 'streetName', "washingtonallee")
+              .having((l) => l.streetNumber, 'streetNumber', "13a")
+              .having((l) => l.phoneNumber, 'phoneNumber', "200248092374")
               .having((l) => l.creationDate, 'creationDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
               .having((l) => l.modifiedDate, 'modifiedDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
-              .having((l) => l.taxedAmount, 'taxedAmount', 15),
+              .having((l) => l.email, 'email', "erna@bert.de"),
         );
       });
 
-      test('getItems returns list of items on valid response', () async {
+      test('getClients returns list of clients on valid response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn(
@@ -286,37 +287,39 @@ void main() {
     "data": [{
         "_id": "62e393a5fb12b967fea3d9d0",
         "userId": "62e393a5fb12b967fea3d9d0",
-        "title": "abcefghijklmnopqrstuvwxyztest",
-        "description": "Bricks for construction",
-        "pricePerUnit": 17.625,
-        "tax": 0.19,
-        "discount": 0.02,
-        "taxedAmount": 15,
+        "name": "abcefghijklmnopqrstuvwxyztest",
+        "city": "hamburg",
+        "postalCode": "22111",
+        "streetName": "washingtonallee",
+        "streetNumber": "13a",
+        "phoneNumber": "200248092374",
         "taxIncluded": true,
         "creationDate": "2022-08-11T09:12:11.524Z",
-        "modifiedDate": "2022-08-11T09:12:11.524Z"
+        "modifiedDate": "2022-08-11T09:12:11.524Z",
+        "email": "erna@bert.de"
+    
     }],
     "lastN": 1
     
 }''',
         );
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
-        final actual = await itemApiClient.getItems({});
+        final actual = await clientApiClient.getClients({});
         print(actual);
         expect(
-          actual["itemList"][0],
-          isA<Item>()
-              .having((l) => l.title, 'title', 'abcefghijklmnopqrstuvwxyztest')
+          actual["clientList"][0],
+          isA<Client>()
+              .having((l) => l.name, 'name', 'abcefghijklmnopqrstuvwxyztest')
               .having((l) => l.id, 'id', '62e393a5fb12b967fea3d9d0')
               .having((l) => l.userId, 'userId', '62e393a5fb12b967fea3d9d0')
-              .having((l) => l.description, 'description', 'Bricks for construction')
-              .having((l) => l.pricePerUnit, 'pricePerUnit', 17.625)
-              .having((l) => l.tax, 'tax', 0.19)
-              .having((l) => l.discount, 'discount', 0.02)
-              .having((l) => l.taxIncluded, 'taxIncluded', true)
+              .having((l) => l.city, 'city', 'hamburg')
+              .having((l) => l.postalCode, 'postalCode', "22111")
+              .having((l) => l.streetName, 'streetName', "washingtonallee")
+              .having((l) => l.streetNumber, 'streetNumber', "13a")
+              .having((l) => l.phoneNumber, 'phoneNumber', "200248092374")
               .having((l) => l.creationDate, 'creationDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
               .having((l) => l.modifiedDate, 'modifiedDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
-              .having((l) => l.taxedAmount, 'taxedAmount', 15),
+              .having((l) => l.email, 'email', "erna@bert.de"),
         );
       });
     });

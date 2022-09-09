@@ -1,5 +1,5 @@
-name: item_repository
-description: A Dart Repository which manages the item domain.
+name: bl_objects_repository
+description: A Dart Repository which manages the bl_objects domains.
 version: 0.0.1
 homepage:
 

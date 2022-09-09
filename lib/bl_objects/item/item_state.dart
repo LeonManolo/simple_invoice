@@ -1,37 +1,72 @@
 
 part of 'item_cubit.dart';
-enum ItemStatus { initial, loading, success, failure}
 
-extension ItemStatusX on ItemStatus {
-  bool get isInitial => this == ItemStatus.initial;
-  bool get isLoading => this == ItemStatus.loading;
-  bool get isSuccess => this == ItemStatus.success;
-  bool get isFailure => this == ItemStatus.failure;
+abstract class ItemState extends Equatable {
+  const ItemState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class InitialState extends ItemState {}
+
+class LoadingState extends ItemState {}
+
+class ItemDeletedState extends ItemState {}
+
+class ItemUpdatedState extends ItemState {}
+
+class NoMoreResultsState extends ItemState {}
+
+@JsonSerializable()
+class ItemCreatedState extends ItemState{
+
+  final String id;
+  const ItemCreatedState({required this.id});
+
+  factory ItemCreatedState.fromJson(Map<String, dynamic> json) =>
+      _$ItemCreatedStateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemCreatedStateToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ItemFetchedState extends ItemState {
+  final Item item;
+  const ItemFetchedState({required this.item});
+
+  factory ItemFetchedState.fromJson(Map<String, dynamic> json) =>
+      _$ItemFetchedStateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemFetchedStateToJson(this);
+
+  @override
+  List<Object?> get props => [item];
+}
+
+@JsonSerializable(explicitToJson: true)
+class ItemListFetchedState extends ItemState {
+  final int lastN;
+  final List<Item> itemList;
+  const ItemListFetchedState({required this.itemList, required this.lastN});
+
+  factory ItemListFetchedState.fromJson(Map<String, dynamic> json) =>
+      _$ItemListFetchedStateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemListFetchedStateToJson(this);
+
+  @override
+  List<Object?> get props => [itemList];
 }
 
 @JsonSerializable()
-class ItemState extends Equatable{
-  final ItemStatus itemStatus;
-  final List<Item> itemList;
-  final Item? item;
-  const ItemState({this.item, required this.itemList, this.itemStatus = ItemStatus.initial,
-});
+class FailureState extends ItemState {
+  final String errorMessage;
+  const FailureState({required this.errorMessage});
 
-  ItemState copyWith({
-    List<Item>? itemList,
-    ItemStatus? itemStatus,
-    Item? item
-  }){
-   return ItemState(
-     itemList: itemList ?? this.itemList,
-     itemStatus: itemStatus ?? this.itemStatus,
-     item: item ?? this.item
-   );
-  }
-  factory ItemState.fromJson(Map<String, dynamic> json) =>
-      _$ItemStateFromJson(json);
-  Map<String, dynamic> toJson() => _$ItemStateToJson(this);
+  factory FailureState.fromJson(Map<String, dynamic> json) =>
+      _$FailureStateFromJson(json);
 
-  @override
-  List<Object?> get props => [itemStatus, item, itemList];
+  Map<String, dynamic> toJson() => _$FailureStateToJson(this);
 }
+

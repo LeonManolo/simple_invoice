@@ -1,140 +1,148 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:bloc_test/bloc_test.dart';
-import 'package:easyinvoice/bl_objects/item/item_cubit.dart';
+import 'package:easyinvoice/bl_objects/user/user_cubit.dart';
 import 'package:invoice_api/invoice_api.dart';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-import 'package:bl_objects_repository/item/index.dart'
-as item_repository;
+import 'package:bl_objects_repository/user/index.dart'
+as user_repository;
 
 import '../../helpers/hydrated_bloc.dart';
 
+class MockUserRepository extends Mock
+    implements user_repository.UserRepository {}
 
-
-class MockItemRepository extends Mock
-    implements item_repository.ItemRepository {}
-
-class MockItem extends Mock implements Item {}
+class MockUser extends Mock implements User {}
 
 void main() {
   initHydratedStorage();
 
-  group('itemCubit', () {
-    late Item item;
-    late item_repository.ItemRepository itemRepository;
-    late ItemCubit itemCubit;
-    late Item ritem;
-    late Item ritem2;
+  group('userCubit', () {
+    late User user;
+    late user_repository.UserRepository userRepository;
+    late UserCubit userCubit;
+    late User ruser;
+    late User ruser2;
     setUp(() async {
-      ritem = Item(
-          userId: '62e393a5fb12b967fea3d9d0',
+      ruser = User(
           id: '62e393a5fb12b967fea3d9d0',
-          title: 'abcefghijklmnopqrstuvwxyztest',
-          taxIncluded: true,
-          modifiedDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
-          creationDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
-          tax: 0.19,
-          discount: 0.02,
-          pricePerUnit: 17.625,
-          taxedAmount: 15,
-          description: "Bricks for construction"
+          name: "sigmund",
+          billingInformation: BillingInformation(taxNumber: "5474352354", germanUstId: "123423634623", streetName: "streetName", paymentInformation: PaymentInformation(details: 'rerwerwerwe', type: 'other'), streetNumber: "streetNumber", postalCode: "435234", city: "city", phoneNumber: "4353475323423"),
+          locale: Locale.DE,
+          email: "g@g.com",
+          welcomeScreenData1: false,
+          welcomeScreenData2: false,
+          welcomeScreenData3: false,
+          creationDate: DateTime.now(),
+          purchaseToken: ["daweef32r34t45t23e23e"],
+          hasPremium: false,
+          originalTransactionId: "originalTransactionId",
+          subscriptionExpirationDate: DateTime.now(),
+          modifiedDate: DateTime.now()
       );
-      ritem2 = Item(
-          userId: '62e393a5fb12b967fea3d9d0',
+      ruser2 = User(
           id: '62e393a5fb12b967fea3d9d0',
-          title: 'abcefghijklmnopqrstuvwxyztest',
-          taxIncluded: true,
-          modifiedDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
-          creationDate: DateTime.parse("2022-08-11T09:12:11.524Z"),
-          tax: 0.18,
-          discount: 0.02,
-          pricePerUnit: 17.625,
-          taxedAmount: 15,
-          description: "Bricks for construction"
+          name: "sigmund",
+          billingInformation: BillingInformation(taxNumber: "5474352354", germanUstId: "123423634623", streetName: "streetName", paymentInformation: PaymentInformation(details: 'rerwerwerwe', type: 'other'), streetNumber: "streetNumber", postalCode: "435234", city: "city", phoneNumber: "4353475323423"),
+          locale: Locale.DE,
+          email: "g@g.com2",
+          welcomeScreenData1: false,
+          welcomeScreenData2: false,
+          welcomeScreenData3: false,
+          creationDate: DateTime.now(),
+          purchaseToken: ["daweef32r34t45t23e23e"],
+          hasPremium: false,
+          originalTransactionId: "originalTransactionId",
+          subscriptionExpirationDate: DateTime.now(),
+          modifiedDate: DateTime.now()
       );
-      item = MockItem();
-      itemRepository = MockItemRepository();
-      when(() => item.taxedAmount).thenReturn(15);
-      when(() => item.tax).thenReturn(0.5);
-      when(() => item.discount).thenReturn(0.5);
-      when(() => item.creationDate).thenReturn(DateTime.now());
-      when(() => item.modifiedDate).thenReturn(DateTime.now());
-      when(() => item.description).thenReturn("description");
-      when(() => item.id).thenReturn("9f239d98v9889090a0f38c");
-      when(() => item.userId).thenReturn("9f239d98v9889090a0f38c");
-      when(() => item.taxIncluded).thenReturn(false);
-      when(() => item.pricePerUnit).thenReturn(15);
-      when(() => item.title).thenReturn("title");
+      user = MockUser();
+      userRepository = MockUserRepository();
+      when(() => user.name).thenReturn("sigmund");
+      when(() => user.billingInformation).thenReturn(BillingInformation(taxNumber: "5474352354", germanUstId: "123423634623", streetName: "streetName", paymentInformation: PaymentInformation(details: 'rerwerwerwe', type: 'other'), streetNumber: "streetNumber", postalCode: "435234", city: "city", phoneNumber: "4353475323423"),);
+      when(() => user.locale).thenReturn(Locale.DE);
+      when(() => user.creationDate).thenReturn(DateTime.now());
+      when(() => user.modifiedDate).thenReturn(DateTime.now());
+      when(() => user.email).thenReturn("g@g.com2");
+      when(() => user.id).thenReturn("9f239d98v9889090a0f38c");
+      when(() => user.welcomeScreenData1).thenReturn(false);
+      when(() => user.welcomeScreenData2).thenReturn(false);
+      when(() => user.welcomeScreenData3).thenReturn(false);
+      when(() => user.purchaseToken).thenReturn(["daweef32r34t45t23e23e"]);
+      when(() => user.hasPremium).thenReturn(false);
+      when(() => user.originalTransactionId).thenReturn("originalTransactionId");
+      when(() => user.subscriptionExpirationDate).thenReturn(DateTime.now());
       when(
-            () => itemRepository.getItem(any()),
-      ).thenAnswer((_) async => ritem);
-      itemCubit = ItemCubit(itemRepository);
+            () => userRepository.getUser(any()),
+      ).thenAnswer((_) async => ruser);
+      userCubit = UserCubit(userRepository);
     });
 
     test('initial state is correct', () {
-      final weatherCubit = ItemCubit(itemRepository);
+      final weatherCubit = UserCubit(userRepository);
       expect(weatherCubit.state, InitialState());
     });
 
     group('toJson/fromJson', () {
       test('work properly', () async {
-        final itemCubit = ItemCubit(itemRepository);
-        await itemCubit.fetchItem("id");
-        when(() => itemRepository.getItem("id")).thenAnswer((_) async => Future.value(ritem));
+        final userCubit = UserCubit(userRepository);
+        await userCubit.fetchUser("id");
+        when(() => userRepository.getUser("id")).thenAnswer((_) async => Future.value(ruser));
+        print(userCubit.toJson(userCubit.state));
         expect(
-          itemCubit.fromJson(itemCubit.toJson(itemCubit.state)!),
-          itemCubit.state,
+          userCubit.fromJson(userCubit.toJson(userCubit.state)!),
+          userCubit.state,
         );
       });
     });
 
     group('right states', () {
-      test('is in ItemFetched after item is returned', () async {
-        final itemCubit = ItemCubit(itemRepository);
-        when(() => itemRepository.getItem("id")).thenAnswer((_) async => Future.value(ritem));
-        await itemCubit.fetchItem("id");
+      test('is in UserFetched after user is returned', () async {
+        final userCubit = UserCubit(userRepository);
+        when(() => userRepository.getUser("id")).thenAnswer((_) async => Future.value(ruser));
+        await userCubit.fetchUser("id");
         expect(
-          ItemFetchedState(item: ritem),
-          itemCubit.state,
+          UserFetchedState(user: ruser),
+          userCubit.state,
         );
       });
       test('is in FailureState after exception is thrown', () async {
-        final itemCubit = ItemCubit(itemRepository);
-        when(() => itemRepository.getItem("id")).thenAnswer((_) async => throw Exception("crash"));
-        await itemCubit.fetchItem("id");
+        final userCubit = UserCubit(userRepository);
+        when(() => userRepository.getUser("id")).thenAnswer((_) async => throw Exception("crash"));
+        await userCubit.fetchUser("id");
         expect(
           FailureState(errorMessage: "crash"),
-          itemCubit.state,
+          userCubit.state,
         );
       });
     });
     group('pagination', () {
       test('pagination works', () async {
-        final itemCubit = ItemCubit(itemRepository);
-        when(() => itemRepository.getItems(any())).thenAnswer((_) async => Future.value(item_repository.ItemResponse(itemList: [ritem], lastN: 1)));
-        await itemCubit.fetchItems(query: {}, pagination: true);
-        when(() => itemRepository.getItems(any())).thenAnswer((_) async => Future.value(item_repository.ItemResponse(itemList: [ritem2], lastN: 2)));
-        await itemCubit.fetchItems(query: {}, pagination: true);
+        final userCubit = UserCubit(userRepository);
+        when(() => userRepository.getUsers(any())).thenAnswer((_) async => Future.value(user_repository.UserResponse(userList: [ruser], lastN: 1)));
+        await userCubit.fetchUsers(query: {}, pagination: true);
+        when(() => userRepository.getUsers(any())).thenAnswer((_) async => Future.value(user_repository.UserResponse(userList: [ruser2], lastN: 2)));
+        await userCubit.fetchUsers(query: {}, pagination: true);
         expect(
-          ItemListFetchedState(itemList: [ritem, ritem2], lastN: 2),
-          itemCubit.state,
+          UserListFetchedState(userList: [ruser, ruser2], lastN: 2),
+          userCubit.state,
         );
       });
       test('pagination set on false works', () async {
-        final itemCubit = ItemCubit(itemRepository);
-        when(() => itemRepository.getItems(any())).thenAnswer((_) async => Future.value(item_repository.ItemResponse(itemList: [ritem], lastN: 1)));
-        await itemCubit.fetchItems(query: {}, pagination: true);
-        when(() => itemRepository.getItems(any())).thenAnswer((_) async => Future.value(item_repository.ItemResponse(itemList: [ritem2], lastN: 2)));
-        await itemCubit.fetchItems(query: {}, pagination: true);
+        final userCubit = UserCubit(userRepository);
+        when(() => userRepository.getUsers(any())).thenAnswer((_) async => Future.value(user_repository.UserResponse(userList: [ruser], lastN: 1)));
+        await userCubit.fetchUsers(query: {}, pagination: true);
+        when(() => userRepository.getUsers(any())).thenAnswer((_) async => Future.value(user_repository.UserResponse(userList: [ruser2], lastN: 2)));
+        await userCubit.fetchUsers(query: {}, pagination: true);
         expect(
-          ItemListFetchedState(itemList: [ritem, ritem2], lastN: 2),
-          itemCubit.state,
+          UserListFetchedState(userList: [ruser, ruser2], lastN: 2),
+          userCubit.state,
         );
-        await itemCubit.fetchItems(query: {}, pagination: false);
+        await userCubit.fetchUsers(query: {}, pagination: false);
         expect(
-          ItemListFetchedState(itemList: [ritem2], lastN: 1),
-          itemCubit.state,
+          UserListFetchedState(userList: [ruser2], lastN: 1),
+          userCubit.state,
         );
       });
     });

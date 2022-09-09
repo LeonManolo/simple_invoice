@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:invoice_api/invoice_api.dart';
 
-class ItemResponse extends Equatable {
-  final List<Item> itemList;
+class ClientResponse extends Equatable {
+  final List<Client> clientList;
   final int lastN;
-  ItemResponse({required this.itemList, required this.lastN});
+  ClientResponse({required this.clientList, required this.lastN});
 
   @override
-  List<Object?> get props => [itemList, lastN];
+  List<Object?> get props => [clientList, lastN];
 }

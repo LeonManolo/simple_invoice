@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:invoice_api/invoice_api.dart';
-import 'package:item_repository/models/itemResponse.dart';
-export './models/itemResponse.dart';
+
+import 'models/itemResponse.dart';
 
 class ItemFailure implements Exception {}
 
@@ -17,7 +17,7 @@ class ItemRepository {
     return item;
   }
 
-  Future<ItemResponse> getItems(Map<String, dynamic> query) async{
+  Future<ItemResponse> getItems(Map<String, String> query) async{
     Map<String, dynamic> responseMap = await _itemApiClient.getItems(query);
     ItemResponse itemResponse = ItemResponse(itemList: responseMap["itemList"], lastN: responseMap["lastN"]);
     return itemResponse;

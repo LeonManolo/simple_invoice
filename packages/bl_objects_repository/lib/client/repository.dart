@@ -2,37 +2,37 @@ import 'dart:async';
 
 import 'package:invoice_api/invoice_api.dart';
 
-import 'models/itemResponse.dart';
+import 'models/clientResponse.dart';
 
-class ItemFailure implements Exception {}
+class ClientFailure implements Exception {}
 
-class ItemRepository {
-  ItemRepository({ItemApiClient? itemApiClient})
-      : _itemApiClient = itemApiClient ?? ItemApiClient();
+class ClientRepository {
+  ClientRepository({ClientApiClient? clientApiClient})
+      : _clientApiClient = clientApiClient ?? ClientApiClient();
 
-  final ItemApiClient _itemApiClient;
+  final ClientApiClient _clientApiClient;
 
-  Future<Item> getItem(String id) async{
-    Item item = await _itemApiClient.getItemById(id);
-    return item;
+  Future<Client> getClient(String id) async{
+    Client client = await _clientApiClient.getClientById(id);
+    return client;
   }
 
-  Future<ItemResponse> getItems(Map<String, dynamic> query) async{
-    Map<String, dynamic> responseMap = await _itemApiClient.getItems(query);
-    ItemResponse itemResponse = ItemResponse(itemList: responseMap["itemList"], lastN: responseMap["lastN"]);
-    return itemResponse;
+  Future<ClientResponse> getClients(Map<String, String> query) async{
+    Map<String, dynamic> responseMap = await _clientApiClient.getClients(query);
+    ClientResponse clientResponse = ClientResponse(clientList: responseMap["clientList"], lastN: responseMap["lastN"]);
+    return clientResponse;
   }
 
-  deleteItem(String id) async{
-    await _itemApiClient.deleteItem(id);
+  deleteClient(String id) async{
+    await _clientApiClient.deleteClient(id);
   }
 
-  Future<String> insertItem(Item item) async{
-    String insertedId = await _itemApiClient.insertItem(item);
+  Future<String> insertClient(Client client) async{
+    String insertedId = await _clientApiClient.insertClient(client);
     return insertedId;
   }
 
-  updateItem(Item item) async{
-    await _itemApiClient.updateItem(item);
+  updateClient(Client client) async{
+    await _clientApiClient.updateClient(client);
   }
 }

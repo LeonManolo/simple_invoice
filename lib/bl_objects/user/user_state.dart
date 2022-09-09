@@ -1,66 +1,66 @@
 
-part of 'item_cubit.dart';
+part of 'user_cubit.dart';
 
-abstract class ItemState extends Equatable {
-  const ItemState();
+abstract class UserState extends Equatable {
+  const UserState();
 
   @override
   List<Object?> get props => [];
 }
 
-class InitialState extends ItemState {}
+class InitialState extends UserState {}
 
-class LoadingState extends ItemState {}
+class LoadingState extends UserState {}
 
-class ItemDeletedState extends ItemState {}
+class UserDeletedState extends UserState {}
 
-class ItemUpdatedState extends ItemState {}
+class UserUpdatedState extends UserState {}
 
-class NoMoreResultsState extends ItemState {}
+class NoMoreResultsState extends UserState {}
 
 @JsonSerializable()
-class ItemCreatedState extends ItemState{
+class UserCreatedState extends UserState{
 
   final String id;
-  const ItemCreatedState({required this.id});
+  const UserCreatedState({required this.id});
 
-  factory ItemCreatedState.fromJson(Map<String, dynamic> json) =>
-      _$ItemCreatedStateFromJson(json);
+  factory UserCreatedState.fromJson(Map<String, dynamic> json) =>
+      _$UserCreatedStateFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ItemCreatedStateToJson(this);
+  Map<String, dynamic> toJson() => _$UserCreatedStateToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class ItemFetchedState extends ItemState {
-  final Item item;
-  const ItemFetchedState({required this.item});
+class UserFetchedState extends UserState {
+  final User user;
+  const UserFetchedState({required this.user});
 
-  factory ItemFetchedState.fromJson(Map<String, dynamic> json) =>
-      _$ItemFetchedStateFromJson(json);
+  factory UserFetchedState.fromJson(Map<String, dynamic> json) =>
+      _$UserFetchedStateFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ItemFetchedStateToJson(this);
+  Map<String, dynamic> toJson() => _$UserFetchedStateToJson(this);
 
   @override
-  List<Object?> get props => [item];
+  List<Object?> get props => [user];
 }
 
 @JsonSerializable(explicitToJson: true)
-class ItemListFetchedState extends ItemState {
+class UserListFetchedState extends UserState {
   final int lastN;
-  final List<Item> itemList;
-  const ItemListFetchedState({required this.itemList, required this.lastN});
+  final List<User> userList;
+  const UserListFetchedState({required this.userList, required this.lastN});
 
-  factory ItemListFetchedState.fromJson(Map<String, dynamic> json) =>
-      _$ItemListFetchedStateFromJson(json);
+  factory UserListFetchedState.fromJson(Map<String, dynamic> json) =>
+      _$UserListFetchedStateFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ItemListFetchedStateToJson(this);
+  Map<String, dynamic> toJson() => _$UserListFetchedStateToJson(this);
 
   @override
-  List<Object?> get props => [itemList];
+  List<Object?> get props => [userList];
 }
 
 @JsonSerializable()
-class FailureState extends ItemState {
+class FailureState extends UserState {
   final String errorMessage;
   const FailureState({required this.errorMessage});
 

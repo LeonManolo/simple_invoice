@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  bl_objects_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/bl_objects_repository"
+      relative: true
+    source: path
+    version: "0.0.1"
   bloc:
     dependency: transitive
     description:
@@ -344,7 +351,7 @@ packages:
       name: hydrated_bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.1.0"
+    version: "9.0.0-dev.3"
   iconsax:
     dependency: "direct main"
     description:
@@ -366,13 +373,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  item_repository:
-    dependency: "direct main"
-    description:
-      path: "packages/item_repository"
-      relative: true
-    source: path
-    version: "0.0.1"
   js:
     dependency: transitive
     description:

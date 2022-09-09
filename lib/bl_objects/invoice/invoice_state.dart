@@ -1,66 +1,66 @@
 
-part of 'client_cubit.dart';
+part of 'invoice_cubit.dart';
 
-abstract class ClientState extends Equatable {
-  const ClientState();
+abstract class InvoiceState extends Equatable {
+  const InvoiceState();
 
   @override
   List<Object?> get props => [];
 }
 
-class InitialState extends ClientState {}
+class InitialState extends InvoiceState {}
 
-class LoadingState extends ClientState {}
+class LoadingState extends InvoiceState {}
 
-class ClientDeletedState extends ClientState {}
+class InvoiceDeletedState extends InvoiceState {}
 
-class ClientUpdatedState extends ClientState {}
+class InvoiceUpdatedState extends InvoiceState {}
 
-class NoMoreResultsState extends ClientState {}
+class NoMoreResultsState extends InvoiceState {}
 
 @JsonSerializable()
-class ClientCreatedState extends ClientState{
+class InvoiceCreatedState extends InvoiceState{
 
   final String id;
-  const ClientCreatedState({required this.id});
+  const InvoiceCreatedState({required this.id});
 
-  factory ClientCreatedState.fromJson(Map<String, dynamic> json) =>
-      _$ClientCreatedStateFromJson(json);
+  factory InvoiceCreatedState.fromJson(Map<String, dynamic> json) =>
+      _$InvoiceCreatedStateFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ClientCreatedStateToJson(this);
+  Map<String, dynamic> toJson() => _$InvoiceCreatedStateToJson(this);
 }
 
-@JsonSerializable()
-class ClientFetchedState extends ClientState {
-  final Client client;
-  const ClientFetchedState({required this.client});
+@JsonSerializable(explicitToJson: true)
+class InvoiceFetchedState extends InvoiceState {
+  final Invoice invoice;
+  const InvoiceFetchedState({required this.invoice});
 
-  factory ClientFetchedState.fromJson(Map<String, dynamic> json) =>
-      _$ClientFetchedStateFromJson(json);
+  factory InvoiceFetchedState.fromJson(Map<String, dynamic> json) =>
+      _$InvoiceFetchedStateFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ClientFetchedStateToJson(this);
+  Map<String, dynamic> toJson() => _$InvoiceFetchedStateToJson(this);
 
   @override
-  List<Object?> get props => [client];
+  List<Object?> get props => [invoice];
 }
 
-@JsonSerializable()
-class ClientListFetchedState extends ClientState {
+@JsonSerializable(explicitToJson: true)
+class InvoiceListFetchedState extends InvoiceState {
   final int lastN;
-  final List<Client> clientList;
-  const ClientListFetchedState({required this.clientList, required this.lastN});
+  final List<Invoice> invoiceList;
+  const InvoiceListFetchedState({required this.invoiceList, required this.lastN});
 
-  factory ClientListFetchedState.fromJson(Map<String, dynamic> json) =>
-      _$ClientListFetchedStateFromJson(json);
+  factory InvoiceListFetchedState.fromJson(Map<String, dynamic> json) =>
+      _$InvoiceListFetchedStateFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ClientListFetchedStateToJson(this);
+  Map<String, dynamic> toJson() => _$InvoiceListFetchedStateToJson(this);
 
   @override
-  List<Object?> get props => [clientList];
+  List<Object?> get props => [invoiceList];
 }
 
 @JsonSerializable()
-class FailureState extends ClientState {
+class FailureState extends InvoiceState {
   final String errorMessage;
   const FailureState({required this.errorMessage});
 

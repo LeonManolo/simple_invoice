@@ -2,37 +2,37 @@ import 'dart:async';
 
 import 'package:invoice_api/invoice_api.dart';
 
-import 'models/itemResponse.dart';
+import 'models/invoiceResponse.dart';
 
-class ItemFailure implements Exception {}
+class InvoiceFailure implements Exception {}
 
-class ItemRepository {
-  ItemRepository({ItemApiClient? itemApiClient})
-      : _itemApiClient = itemApiClient ?? ItemApiClient();
+class InvoiceRepository {
+  InvoiceRepository({InvoiceApiClient? invoiceApiClient})
+      : _invoiceApiClient = invoiceApiClient ?? InvoiceApiClient();
 
-  final ItemApiClient _itemApiClient;
+  final InvoiceApiClient _invoiceApiClient;
 
-  Future<Item> getItem(String id) async{
-    Item item = await _itemApiClient.getItemById(id);
-    return item;
+  Future<Invoice> getInvoice(String id) async{
+    Invoice invoice = await _invoiceApiClient.getInvoiceById(id);
+    return invoice;
   }
 
-  Future<ItemResponse> getItems(Map<String, String> query) async{
-    Map<String, dynamic> responseMap = await _itemApiClient.getItems(query);
-    ItemResponse itemResponse = ItemResponse(itemList: responseMap["itemList"], lastN: responseMap["lastN"]);
-    return itemResponse;
+  Future<InvoiceResponse> getInvoices(Map<String, String> query) async{
+    Map<String, dynamic> responseMap = await _invoiceApiClient.getInvoices(query);
+    InvoiceResponse invoiceResponse = InvoiceResponse(invoiceList: responseMap["invoiceList"], lastN: responseMap["lastN"]);
+    return invoiceResponse;
   }
 
-  deleteItem(String id) async{
-    await _itemApiClient.deleteItem(id);
+  deleteInvoice(String id) async{
+    await _invoiceApiClient.deleteInvoice(id);
   }
 
-  Future<String> insertItem(Item item) async{
-    String insertedId = await _itemApiClient.insertItem(item);
+  Future<String> insertInvoice(Invoice invoice) async{
+    String insertedId = await _invoiceApiClient.insertInvoice(invoice);
     return insertedId;
   }
 
-  updateItem(Item item) async{
-    await _itemApiClient.updateItem(item);
+  updateInvoice(Invoice invoice) async{
+    await _invoiceApiClient.updateInvoice(invoice);
   }
 }

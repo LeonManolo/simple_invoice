@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:invoice_api/invoice_api.dart' as invoice_api;
 import 'package:invoice_api/invoice_api.dart';
-import 'package:item_repository/item_repository.dart';
+import 'package:bl_objects_repository/item/index.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

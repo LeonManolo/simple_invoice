@@ -10,14 +10,14 @@ class MockHttpClient extends Mock implements http.Client {}
 
 class MockResponse extends Mock implements http.Response {}
 
-class MockInvoice extends Mock implements Invoice {}
+class MockUser extends Mock implements User {}
 
 class FakeUri extends Fake implements Uri {}
 
 void main() {
-  group('invoiceApiClient', () {
+  group('userApiClient', () {
     late http.Client httpClient;
-    late InvoiceApiClient invoiceApiClient;
+    late UserApiClient userApiClient;
 
     setUpAll(() {
       registerFallbackValue(FakeUri());
@@ -25,18 +25,18 @@ void main() {
 
     setUp(() {
       httpClient = MockHttpClient();
-      invoiceApiClient = InvoiceApiClient(httpClient: httpClient);
+      userApiClient = UserApiClient(httpClient: httpClient);
     });
 
     group('constructor', () {
       test('does not require an httpClient', () {
-        expect(InvoiceApiClient(), isNotNull);
+        expect(UserApiClient(), isNotNull);
       });
     });
 
 
 
-    group('invoice update', () {
+    group('user update', () {
       test('makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
@@ -48,17 +48,17 @@ void main() {
     "matchedCount": 1
 }''');
         when(() => httpClient.put(any(), body: {})).thenAnswer((_) async => response);
-        Invoice fakeInvoice = MockInvoice();
-        when(fakeInvoice.toJson).thenReturn({});
-        final body = jsonEncode(fakeInvoice.toJson());
+        User fakeUser = MockUser();
+        when(fakeUser.toJson).thenReturn({});
+        final body = jsonEncode(fakeUser.toJson());
         try {
-          await invoiceApiClient.insertInvoice(fakeInvoice);
+          await userApiClient.insertUser(fakeUser);
         } catch (_) {}
         verify(
               () => httpClient.put(
               Uri.https(
                 'us-central1-invoice-c63dc.cloudfunctions.net',
-                '/api/v1/bl_objects/invoice',
+                '/api/v1/bl_objects/user',
               ),
               headers: {"Content-Type": "application/json"},
               body: body,
@@ -77,13 +77,13 @@ void main() {
     "upsertedCount": 0,
     "matchedCount": 1
 }''');
-        Invoice fakeInvoice = MockInvoice();
-        when(fakeInvoice.toJson).thenReturn({});
-        final body = jsonEncode(fakeInvoice.toJson());
+        User fakeUser = MockUser();
+        when(fakeUser.toJson).thenReturn({});
+        final body = jsonEncode(fakeUser.toJson());
 
         when(() => httpClient.put(any(), body: body, headers: {"Content-Type":"application/json"})).thenAnswer((_) async => response);
         expect(
-              () async => invoiceApiClient.updateInvoice(fakeInvoice),
+              () async => userApiClient.updateUser(fakeUser),
           throwsA(isA<Exception>()),
         );
       });
@@ -92,22 +92,22 @@ void main() {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
-    "error on updating invoice"
+    "error on updating user"
 }''');
-        Invoice fakeInvoice = MockInvoice();
-        when(fakeInvoice.toJson).thenReturn({});
-        final body = jsonEncode(fakeInvoice.toJson());
+        User fakeUser = MockUser();
+        when(fakeUser.toJson).thenReturn({});
+        final body = jsonEncode(fakeUser.toJson());
 
         when(() => httpClient.put(any(),body: body,headers: {"Content-Type":"application/json"})).thenAnswer((_) async => response);
         expect(
-              () async => invoiceApiClient.updateInvoice(fakeInvoice),
+              () async => userApiClient.updateUser(fakeUser),
           throwsA(isA<Exception>()),
         );
       });
     }
     );
 
-    group('invoice insert', () {
+    group('user insert', () {
       test('makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(201);
@@ -116,38 +116,38 @@ void main() {
         "insertedId": "62e393a5fb12b967fea3d9d0"
 }''');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
-        Invoice fakeInvoice = MockInvoice();
-        when(fakeInvoice.toJson).thenReturn({});
-        final body = jsonEncode(fakeInvoice.toJson());
+        User fakeUser = MockUser();
+        when(fakeUser.toJson).thenReturn({});
+        final body = jsonEncode(fakeUser.toJson());
         try {
-          await invoiceApiClient.insertInvoice(fakeInvoice);
+          await userApiClient.insertUser(fakeUser);
         } catch (_) {}
         verify(
               () => httpClient.put(
               Uri.https(
                 'us-central1-invoice-c63dc.cloudfunctions.net',
-                '/api/v1/bl_objects/invoice',
+                '/api/v1/bl_objects/user',
               ),
               body: body,
               headers: {"Content-Type": "application/json"}
           ),
         ).called(1);
       });
-      test('inserts invoice, id gets extracted correctly', () async {
+      test('inserts user, id gets extracted correctly', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(201);
         when(() => response.body).thenReturn('''{
         "acknowledged": true,
         "insertedId": "62e393a5fb12b967fea3d9d0"
 }''');
-        Invoice fakeInvoice = MockInvoice();
-        when(fakeInvoice.toJson).thenReturn({});
-        final body = jsonEncode(fakeInvoice.toJson());
+        User fakeUser = MockUser();
+        when(fakeUser.toJson).thenReturn({});
+        final body = jsonEncode(fakeUser.toJson());
         when(() => httpClient.post(any(), body: body, headers: {"Content-Type": "application/json"})).thenAnswer((_) async => response);
 
         String id = "62e393a5fb12b967fea3d9d0";
         try {
-          id = await invoiceApiClient.insertInvoice(fakeInvoice);
+          id = await userApiClient.insertUser(fakeUser);
         } catch (_) {}
         expect(id, "62e393a5fb12b967fea3d9d0");
       });
@@ -156,53 +156,53 @@ void main() {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
-    "error on inserting invoice"
+    "error on inserting user"
 }''');
-        Invoice fakeInvoice = MockInvoice();
-        when(fakeInvoice.toJson).thenReturn({});
-        final body = jsonEncode(fakeInvoice.toJson());
+        User fakeUser = MockUser();
+        when(fakeUser.toJson).thenReturn({});
+        final body = jsonEncode(fakeUser.toJson());
         when(() => httpClient.put(any(),body: body, headers: {"Content-Type": "application/json"} )).thenAnswer((_) async => response);
         expect(
-              () async => invoiceApiClient.insertInvoice(fakeInvoice),
+              () async => userApiClient.insertUser(fakeUser),
           throwsA(isA<Exception>()),
         );
       });
     }
     );
 
-    group('invoiceSearch', () {
+    group('userSearch', () {
       const id = 'mock-query';
-      test('getInvoiceById makes correct http request', () async {
+      test('getUserById makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn('{}');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         try {
-          await invoiceApiClient.getInvoiceById(id);
+          await userApiClient.getUserById(id);
         } catch (_) {}
         verify(
               () => httpClient.get(
             Uri.https(
                 'us-central1-invoice-c63dc.cloudfunctions.net',
-                '/api/v1/bl_objects/invoice/$id'
+                '/api/v1/bl_objects/user/$id'
             ),
           ),
         ).called(1);
       });
 
-      test('getInvoices makes correct http request', () async {
+      test('getUsers makes correct http request', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn('{}');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         try {
-          await invoiceApiClient.getInvoices({});
+          await userApiClient.getUsers({});
         } catch (_) {}
         verify(
               () => httpClient.get(
             Uri.https(
                 'us-central1-invoice-c63dc.cloudfunctions.net',
-                '/api/v1/bl_objects/invoice',
+                '/api/v1/bl_objects/user',
                 {}
             ),
           ),
@@ -211,7 +211,7 @@ void main() {
 
 
 
-      test('getInvoiceById throws InvoiceIdRequestFailure on non-200 response', () async {
+      test('getUserById throws UserIdRequestFailure on non-200 response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
@@ -219,12 +219,12 @@ void main() {
 }''');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         expect(
-              () async => invoiceApiClient.getInvoiceById(id),
-          throwsA(isA<InvoiceIdRequestFailure>()),
+              () async => userApiClient.getUserById(id),
+          throwsA(isA<UserIdRequestFailure>()),
         );
       });
 
-      test('getInvoices throws Exception on non-200 response', () async {
+      test('getUsers throws Exception on non-200 response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(400);
         when(() => response.body).thenReturn('''{
@@ -232,63 +232,69 @@ void main() {
 }''');
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
         expect(
-              () async => invoiceApiClient.getInvoices({}),
+              () async => userApiClient.getUsers({}),
           throwsA(isA<Exception>()),
         );
       });
 
-      test('getInvoiceById returns Invoice on valid response', () async {
+      test('getUserById returns User on valid response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn(
           '''
 {
-    
-        "_id": "62e393a5fb12b967fea3d9d0",
-        "invoiceNumber": "abcefghijklmnopqrstuvwxyztest",
-        "userId": "62e393a5fb12b967fea3d9d0",
-        "itemList": [{
-          "quantity": 3,
-          "quantityIdentifier": "kg",
-          "id": "id"
-        }],
-        "discount": 0.19,
+    "_id": "62e393a5fb12b967fea3d9d0",
+    "billingInformation": {
+        "streetName": "streetName",
+        "streetNumber": "streetNumber",
+        "postalCode": "435234",
+        "city": "city",
+        "taxNumber": "5474352354",
+        "germanUstId": "123423634623",
+        "phoneNumber": "4353475323423",
         "paymentInformation": {
-          "type": "type",
-          "details": "details"
-        },
-        "paymentAfterTaxAndDiscount": 34,
-        "paymentDate": "2022-08-11T09:12:11.524Z",
-        "deliveryDate": "2022-08-11T09:12:11.524Z",
-        "creationDate": "2022-08-11T09:12:11.524Z",
-        "modifiedDate": "2022-08-11T09:12:11.524Z",
-        "isPaid": true,
-        "clientId": "62e393a5fb12b967fea3d9d0"
-    
+            "type": "other",
+            "details": "rerwerwerwe"
+        }
+    },
+    "creationDate": "2022-08-11T09:12:11.524Z",
+    "email": "demarcus@gmx.de",
+    "hasPremium": false,
+    "locale": "DE",
+    "modifiedDate": "2022-08-11T09:12:11.524Z",
+    "name": "abcedfghijklmnopqrstuvwxyztest",
+    "originalTransactionId": "",
+    "purchaseToken": [],
+    "subscriptionExpirationDate": "2022-08-11T09:12:11.524Z",
+    "welcomeScreenData1": false,
+    "welcomeScreenData2": false,
+    "welcomeScreenData3": false
 }''',
         );
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
-        final actual = await invoiceApiClient.getInvoiceById(id);
+        final actual = await userApiClient.getUserById(id);
+
         expect(
           actual,
-          isA<Invoice>()
-              .having((l) => l.invoiceNumber, 'invoiceNumber', 'abcefghijklmnopqrstuvwxyztest')
+          isA<User>()
+              .having((l) => l.hasPremium, 'hasPremium', false)
+              .having((l) => l.originalTransactionId, 'originalTransactionId', '')
+              .having((l) => l.purchaseToken, 'purchaseToken', [])
+              .having((l) => l.subscriptionExpirationDate, 'subscriptionExpirationDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
+              .having((l) => l.name, 'name', 'abcedfghijklmnopqrstuvwxyztest')
               .having((l) => l.id, 'id', '62e393a5fb12b967fea3d9d0')
-              .having((l) => l.userId, 'userId', '62e393a5fb12b967fea3d9d0')
-              .having((l) => l.itemList, 'itemList', [DetailedItem(quantity: 3, quantityIdentifier: "kg", id: "id")])
-              .having((l) => l.discount, 'discount', 0.19)
-              .having((l) => l.paymentInformation, 'paymentInformation', PaymentInformation(type: "type", details: "details"))
-              .having((l) => l.paymentAfterTaxAndDiscount, 'paymentAfterTaxAndDiscount', 34)
-              .having((l) => l.paymentDate, 'paymentDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
+              .having((l) => l.email, 'email', 'demarcus@gmx.de')
+              .having((l) => l.welcomeScreenData1, 'welcomeScreenData1', false)
+              .having((l) => l.locale, 'locale', Locale.DE)
+              .having((l) => l.billingInformation, 'billingInformation', BillingInformation(taxNumber: "5474352354", germanUstId: "123423634623", streetName: "streetName", paymentInformation: PaymentInformation(details: 'rerwerwerwe', type: 'other'), streetNumber: "streetNumber", postalCode: "435234", city: "city", phoneNumber: "4353475323423"))
+              .having((l) => l.welcomeScreenData2, 'welcomeScreenData2', false)
+              .having((l) => l.welcomeScreenData3, 'welcomeScreenData3', false)
               .having((l) => l.creationDate, 'creationDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
               .having((l) => l.modifiedDate, 'modifiedDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
-              .having((l) => l.isPaid, 'isPaid', true)
-              .having((l) => l.deliveryDate, 'deliveryDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
-              .having((l) => l.clientId, 'clientId', '62e393a5fb12b967fea3d9d0'),
         );
       });
 
-      test('getInvoices returns list of invoices on valid response', () async {
+      test('getUsers returns list of users on valid response', () async {
         final response = MockResponse();
         when(() => response.statusCode).thenReturn(200);
         when(() => response.body).thenReturn(
@@ -296,49 +302,56 @@ void main() {
 {
     "data": [{
         "_id": "62e393a5fb12b967fea3d9d0",
-        "invoiceNumber": "abcefghijklmnopqrstuvwxyztest",
-        "userId": "62e393a5fb12b967fea3d9d0",
-        "itemList": [{
-          "quantity": 3,
-          "quantityIdentifier": "kg",
-          "id": "id"
-        }],
-        "discount": 0.19,
+    "billingInformation": {
+        "streetName": "streetName",
+        "streetNumber": "streetNumber",
+        "postalCode": "435234",
+        "city": "city",
+        "taxNumber": "5474352354",
+        "germanUstId": "123423634623",
+        "phoneNumber": "4353475323423",
         "paymentInformation": {
-          "type": "type",
-          "details": "details"
-        },
-        "paymentAfterTaxAndDiscount": 34,
-        "paymentDate": "2022-08-11T09:12:11.524Z",
-        "deliveryDate": "2022-08-11T09:12:11.524Z",
-        "creationDate": "2022-08-11T09:12:11.524Z",
-        "modifiedDate": "2022-08-11T09:12:11.524Z",
-        "isPaid": true,
-        "clientId": "62e393a5fb12b967fea3d9d0"
-    }],
+            "type": "other",
+            "details": "rerwerwerwe"
+        }
+    },
+    "creationDate": "2022-08-11T09:12:11.524Z",
+    "email": "demarcus@gmx.de",
+    "hasPremium": false,
+    "locale": "DE",
+    "modifiedDate": "2022-08-11T09:12:11.524Z",
+    "name": "abcedfghijklmnopqrstuvwxyztest",
+    "originalTransactionId": "",
+    "purchaseToken": [],
+    "subscriptionExpirationDate": "2022-08-11T09:12:11.524Z",
+    "welcomeScreenData1": false,
+    "welcomeScreenData2": false,
+    "welcomeScreenData3": false
+}],
     "lastN": 1
     
 }''',
         );
         when(() => httpClient.get(any())).thenAnswer((_) async => response);
-        final actual = await invoiceApiClient.getInvoices({});
+        final actual = await userApiClient.getUsers({});
         print(actual);
         expect(
-          actual["invoiceList"][0],
-          isA<Invoice>()
-              .having((l) => l.invoiceNumber, 'invoiceNumber', 'abcefghijklmnopqrstuvwxyztest')
+          actual["userList"][0],
+          isA<User>()
+              .having((l) => l.hasPremium, 'hasPremium', false)
+              .having((l) => l.originalTransactionId, 'originalTransactionId', '')
+              .having((l) => l.purchaseToken, 'purchaseToken', [])
+              .having((l) => l.subscriptionExpirationDate, 'subscriptionExpirationDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
+              .having((l) => l.name, 'name', 'abcedfghijklmnopqrstuvwxyztest')
               .having((l) => l.id, 'id', '62e393a5fb12b967fea3d9d0')
-              .having((l) => l.userId, 'userId', '62e393a5fb12b967fea3d9d0')
-              .having((l) => l.itemList, 'itemList', [DetailedItem(quantity: 3, quantityIdentifier: "kg", id: "id")])
-              .having((l) => l.discount, 'discount', 0.19)
-              .having((l) => l.paymentInformation, 'paymentInformation', PaymentInformation(type: "type", details: "details"))
-              .having((l) => l.paymentAfterTaxAndDiscount, 'paymentAfterTaxAndDiscount', 34)
-              .having((l) => l.paymentDate, 'paymentDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
+              .having((l) => l.email, 'email', 'demarcus@gmx.de')
+              .having((l) => l.welcomeScreenData1, 'welcomeScreenData1', false)
+              .having((l) => l.locale, 'locale', Locale.DE)
+              .having((l) => l.billingInformation, 'billingInformation', BillingInformation(taxNumber: "5474352354", germanUstId: "123423634623", streetName: "streetName", paymentInformation: PaymentInformation(details: 'rerwerwerwe', type: 'other'), streetNumber: "streetNumber", postalCode: "435234", city: "city", phoneNumber: "4353475323423"))
+              .having((l) => l.welcomeScreenData2, 'welcomeScreenData2', false)
+              .having((l) => l.welcomeScreenData3, 'welcomeScreenData3', false)
               .having((l) => l.creationDate, 'creationDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
               .having((l) => l.modifiedDate, 'modifiedDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
-              .having((l) => l.isPaid, 'isPaid', true)
-              .having((l) => l.deliveryDate, 'deliveryDate', DateTime.parse("2022-08-11T09:12:11.524Z"))
-              .having((l) => l.clientId, 'clientId', '62e393a5fb12b967fea3d9d0'),
         );
       });
     });

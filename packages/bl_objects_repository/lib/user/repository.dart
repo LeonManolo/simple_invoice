@@ -2,37 +2,37 @@ import 'dart:async';
 
 import 'package:invoice_api/invoice_api.dart';
 
-import 'models/itemResponse.dart';
+import 'models/userResponse.dart';
 
-class ItemFailure implements Exception {}
+class UserFailure implements Exception {}
 
-class ItemRepository {
-  ItemRepository({ItemApiClient? itemApiClient})
-      : _itemApiClient = itemApiClient ?? ItemApiClient();
+class UserRepository {
+  UserRepository({UserApiClient? userApiClient})
+      : _userApiClient = userApiClient ?? UserApiClient();
 
-  final ItemApiClient _itemApiClient;
+  final UserApiClient _userApiClient;
 
-  Future<Item> getItem(String id) async{
-    Item item = await _itemApiClient.getItemById(id);
-    return item;
+  Future<User> getUser(String id) async{
+    User user = await _userApiClient.getUserById(id);
+    return user;
   }
 
-  Future<ItemResponse> getItems(Map<String, String> query) async{
-    Map<String, dynamic> responseMap = await _itemApiClient.getItems(query);
-    ItemResponse itemResponse = ItemResponse(itemList: responseMap["itemList"], lastN: responseMap["lastN"]);
-    return itemResponse;
+  Future<UserResponse> getUsers(Map<String, String> query) async{
+    Map<String, dynamic> responseMap = await _userApiClient.getUsers(query);
+    UserResponse userResponse = UserResponse(userList: responseMap["userList"], lastN: responseMap["lastN"]);
+    return userResponse;
   }
 
-  deleteItem(String id) async{
-    await _itemApiClient.deleteItem(id);
+  deleteUser(String id) async{
+    await _userApiClient.deleteUser(id);
   }
 
-  Future<String> insertItem(Item item) async{
-    String insertedId = await _itemApiClient.insertItem(item);
+  Future<String> insertUser(User user) async{
+    String insertedId = await _userApiClient.insertUser(user);
     return insertedId;
   }
 
-  updateItem(Item item) async{
-    await _itemApiClient.updateItem(item);
+  updateUser(User user) async{
+    await _userApiClient.updateUser(user);
   }
 }

@@ -7,6 +7,11 @@ import 'package:easyinvoice/src/features/items/presentation/screens/item_screen.
 import 'package:easyinvoice/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:invoice_api/invoice_api.dart';
+
+import '../bl_objects/client/client_cubit.dart';
+import '../bl_objects/invoice/invoice_cubit.dart';
+import '../bl_objects/user/user_cubit.dart';
 
 class Start extends StatefulWidget {
   const Start({Key? key}) : super(key: key);
@@ -38,8 +43,7 @@ class _StartState extends State<Start> {
   }
 
   void _onBottomNavBarTap(int index) async{
-    await context.read<ItemCubit>().fetchItems();
-    print(context.read<ItemCubit>().state);
+
     setState(() {
       _selectedIndex = index;
     });

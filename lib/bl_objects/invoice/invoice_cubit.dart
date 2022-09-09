@@ -2,91 +2,91 @@ import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:invoice_api/invoice_api.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:bl_objects_repository/client/index.dart'
-    show ClientRepository, ClientResponse;
-part 'client_cubit.g.dart';
-part 'client_state.dart';
+import 'package:bl_objects_repository/invoice/index.dart'
+    show InvoiceRepository, InvoiceResponse;
+part 'invoice_cubit.g.dart';
+part 'invoice_state.dart';
 
-class ClientCubit extends HydratedCubit<ClientState> {
-  ClientCubit(this._clientRepository): super(InitialState());
+class InvoiceCubit extends HydratedCubit<InvoiceState> {
+  InvoiceCubit(this._invoiceRepository): super(InitialState());
 
-  final ClientRepository _clientRepository;
-  List<Client> _clientList = [];
+  final InvoiceRepository _invoiceRepository;
+  List<Invoice> _invoiceList = [];
   int _skip = 0;
 
-  Future<void> updateClient(Client client) async {
+  Future<void> updateInvoice(Invoice invoice) async {
 
     emit(LoadingState());
 
     try {
-      await _clientRepository.updateClient(client);
+      await _invoiceRepository.updateInvoice(invoice);
 
-      emit(ClientUpdatedState());
+      emit(InvoiceUpdatedState());
     } on Exception {
       emit(const FailureState(errorMessage: 'errorMessage'));
     }
   }
 
-  Future<void> fetchClient(String? id) async {
+  Future<void> fetchInvoice(String? id) async {
     if (id == null || id.isEmpty) return;
 
     emit(LoadingState());
 
     try {
-      final client = await _clientRepository.getClient(id);
+      final invoice = await _invoiceRepository.getInvoice(id);
 
-      emit(ClientFetchedState(client: client));
+      emit(InvoiceFetchedState(invoice: invoice));
     } on Exception {
       emit(const FailureState(errorMessage: 'errorMessage'));
     }
   }
 
-  Future<void> deleteClient(String? id) async {
+  Future<void> deleteInvoice(String? id) async {
     if (id == null || id.isEmpty) return;
 
     emit(LoadingState());
 
     try {
-      await _clientRepository.deleteClient(id);
-      emit(ClientDeletedState());
+      await _invoiceRepository.deleteInvoice(id);
+      emit(InvoiceDeletedState());
     } on Exception {
       emit(const FailureState(errorMessage: 'errorMessage'));
     }
   }
 
-  Future<void> fetchClients({Map<String, String>? query = const {}, bool pagination = false}) async {
+  Future<void> fetchInvoices({Map<String, String>? query = const {}, bool pagination = false}) async {
     if (query == null) return;
     query['skip'] = '$_skip';
     emit(LoadingState());
     if(!pagination){
       _skip = 0;
-      _clientList = [];
+      _invoiceList = [];
     }
 
     try {
-      ClientResponse response = await _clientRepository.getClients(query);
+      InvoiceResponse response = await _invoiceRepository.getInvoices(query);
       if(pagination){
         _skip = response.lastN;
       }
-      if(response.clientList.isEmpty){
+      if(response.invoiceList.isEmpty){
         emit(NoMoreResultsState());
         return;
       }
-      _clientList += response.clientList;
-      emit(ClientListFetchedState(clientList: _clientList, lastN: response.lastN));
+      _invoiceList += response.invoiceList;
+      emit(InvoiceListFetchedState(invoiceList: _invoiceList, lastN: response.lastN));
     } on Exception {
       emit(const FailureState(errorMessage: 'errorMessage'));
     }
   }
 
-  Future<void> insertClient(Client client) async {
+  Future<void> insertInvoice(Invoice invoice) async {
 
     emit(LoadingState());
 
     try {
-      final String id = await _clientRepository.insertClient(client);
+      final String id = await _invoiceRepository.insertInvoice(invoice);
 
-      emit(ClientCreatedState(id: id));
+      emit(InvoiceCreatedState(id: id));
     } on Exception {
       emit(const FailureState(errorMessage: 'errorMessage'));
     }
@@ -94,30 +94,30 @@ class ClientCubit extends HydratedCubit<ClientState> {
 
   //better ideas are appreciated
   @override
-  ClientState? fromJson(Map<String, dynamic> json) {
+  InvoiceState? fromJson(Map<String, dynamic> json) {
     switch (json["state"]){
       case "InitialState": return InitialState();
       case "LoadingState": return LoadingState();
-      case "ClientDeletedState": return ClientDeletedState();
-      case "ClientUpdatedState": return ClientUpdatedState();
-      case "ClientFetchedState": return ClientFetchedState.fromJson(json["class"]);
-      case "ClientCreatedState": return ClientCreatedState.fromJson(json["class"]);
-      case "ClientListFetchedState": return ClientListFetchedState.fromJson(json["class"]);
+      case "InvoiceDeletedState": return InvoiceDeletedState();
+      case "InvoiceUpdatedState": return InvoiceUpdatedState();
+      case "InvoiceFetchedState": return InvoiceFetchedState.fromJson(json["class"]);
+      case "InvoiceCreatedState": return InvoiceCreatedState.fromJson(json["class"]);
+      case "InvoiceListFetchedState": return InvoiceListFetchedState.fromJson(json["class"]);
       case "FailureState": return FailureState.fromJson(json["class"]);
     }
     throw UnimplementedError();
   }
 
   @override
-  Map<String, dynamic>? toJson(ClientState state) {
+  Map<String, dynamic>? toJson(InvoiceState state) {
     switch (state.runtimeType){
-      case ClientCreatedState : return {"state": "ClientCreatedState", "class": (state as ClientCreatedState).toJson()};
-      case ClientFetchedState : return {"state": "ClientFetchedState", "class": (state as ClientFetchedState).toJson()};
-      case ClientListFetchedState : return {"state": "ClientListFetchedState", "class":(state as ClientListFetchedState).toJson()};
+      case InvoiceCreatedState : return {"state": "InvoiceCreatedState", "class": (state as InvoiceCreatedState).toJson()};
+      case InvoiceFetchedState : return {"state": "InvoiceFetchedState", "class": (state as InvoiceFetchedState).toJson()};
+      case InvoiceListFetchedState : return {"state": "InvoiceListFetchedState", "class":(state as InvoiceListFetchedState).toJson()};
       case InitialState : return {"state": "InitialState"};
       case LoadingState : return {"state": "LoadingState"};
-      case ClientDeletedState : return {"state": "ClientDeletedState"};
-      case ClientUpdatedState : return {"state": "ClientUpdatedState"};
+      case InvoiceDeletedState : return {"state": "InvoiceDeletedState"};
+      case InvoiceUpdatedState : return {"state": "InvoiceUpdatedState"};
       case FailureState : return {"state": "FailureState", "class":(state as FailureState).toJson()};
 
       default : return {};
