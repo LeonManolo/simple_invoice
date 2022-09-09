@@ -1,0 +1,38 @@
+import 'dart:async';
+
+import 'package:invoice_api/invoice_api.dart';
+import 'package:item_repository/models/itemResponse.dart';
+export './models/itemResponse.dart';
+
+class ItemFailure implements Exception {}
+
+class ItemRepository {
+  ItemRepository({ItemApiClient? itemApiClient})
+      : _itemApiClient = itemApiClient ?? ItemApiClient();
+
+  final ItemApiClient _itemApiClient;
+
+  Future<Item> getItem(String id) async{
+    Item item = await _itemApiClient.getItemById(id);
+    return item;
+  }
+
+  Future<ItemResponse> getItems(Map<String, dynamic> query) async{
+    Map<String, dynamic> responseMap = await _itemApiClient.getItems(query);
+    ItemResponse itemResponse = ItemResponse(itemList: responseMap["itemList"], lastN: responseMap["lastN"]);
+    return itemResponse;
+  }
+
+  deleteItem(String id) async{
+    await _itemApiClient.deleteItem(id);
+  }
+
+  Future<String> insertItem(Item item) async{
+    String insertedId = await _itemApiClient.insertItem(item);
+    return insertedId;
+  }
+
+  updateItem(Item item) async{
+    await _itemApiClient.updateItem(item);
+  }
+}
